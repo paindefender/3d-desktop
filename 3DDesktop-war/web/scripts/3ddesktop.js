@@ -1,8 +1,8 @@
 
  $(document).ready(function() {
  		// Declaring main variables
- 		var container, camera, scene, renderer, floormesh, TableTop, phi = 0, Leg1, Leg2, Leg3, Leg4, StackPaper, Paper; 
-		
+ 		var container, camera, scene, renderer, floormesh, TableTop, phi = 0, Leg1, Leg2, Leg3, Leg4, StackPaper, Paper;
+
 
 
  		init();
@@ -16,15 +16,15 @@
 
 				//
 				camera = new THREE.TrackballCamera({
-					fov: 45, 
+					fov: 45,
 					aspect: window.innerWidth / window.innerHeight,
 					near: 1,
-					far: 10000, 
+					far: 10000,
 					rotateSpeed: 1.0,
 					zoomSpeed: 1.2,
-					panSpeed: 0.8, 
+					panSpeed: 0.8,
 					noZoom: false,
-					noPan: false						
+					noPan: false
 				});
 
 
@@ -55,7 +55,7 @@
 					new THREE.MeshBasicMaterial( { color: 0xB5B1AE }) // задняя сторона
 				];
 				// Texture for paper
-				var texture = THREE.ImageUtils.loadTexture('js/textures/paper.jpg');
+				var texture = THREE.ImageUtils.loadTexture('textures/paper.jpg');
 				var paper = [
 					new THREE.MeshBasicMaterial( {map: texture}), // правая сторона
 					new THREE.MeshBasicMaterial( {map: texture}), // левая сторона
@@ -73,7 +73,7 @@
 					new THREE.MeshBasicMaterial( {map: texture, transparent: true, opacity: 0.5}), // лицевая сторона
 					new THREE.MeshBasicMaterial( {map: texture, transparent: true, opacity: 0.5}) // задняя сторона
 				]
-				
+
 				// Creating top of the table
 				var cube = new THREE.CubeGeometry( 300, 5, 500, 1, 1, 1, materials );
 				//
@@ -85,9 +85,9 @@
  				//Adding shadow to the object
  				new THREE.ShadowVolume(TableTop);
 
-				// 
+				//
 				var cube = new THREE.CubeGeometry( 10, 190, 10, 1, 1, 1, materials );
-				//создаем мэш для куба, в качестве материала мэша 
+				//создаем мэш для куба, в качестве материала мэша
 				//будет браться тот, который применен к кубу
 				Leg1 = new THREE.Mesh( cube, new THREE.MeshFaceMaterial() );
 				//указываем позицию по оси y
@@ -99,10 +99,10 @@
  				//добавляем тень кубу
  				new THREE.ShadowVolume(Leg1);
 				//
-				
+
 				//
 				var cube = new THREE.CubeGeometry( 10, 190, 10, 1, 1, 1, materials );
-				//создаем мэш для куба, в качестве материала мэша 
+				//создаем мэш для куба, в качестве материала мэша
 				//будет браться тот, который применен к кубу
 				Leg2 = new THREE.Mesh( cube, new THREE.MeshFaceMaterial() );
 				//указываем позицию по оси y
@@ -114,10 +114,10 @@
  				//добавляем тень кубу
  				new THREE.ShadowVolume(Leg2);
 				//
-				
+
 				//
 				var cube = new THREE.CubeGeometry( 10, 190, 10, 1, 1, 1, materials );
-				//создаем мэш для куба, в качестве материала мэша 
+				//создаем мэш для куба, в качестве материала мэша
 				//будет браться тот, который применен к кубу
 				Leg3 = new THREE.Mesh( cube, new THREE.MeshFaceMaterial() );
 				//указываем позицию по оси y
@@ -129,10 +129,10 @@
  				//добавляем тень кубу
  				new THREE.ShadowVolume(Leg3);
 				//
-				
+
 				//
 				var cube = new THREE.CubeGeometry( 10, 190, 10, 1, 1, 1, materials );
-				//создаем мэш для куба, в качестве материала мэша 
+				//создаем мэш для куба, в качестве материала мэша
 				//будет браться тот, который применен к кубу
 				Leg4 = new THREE.Mesh( cube, new THREE.MeshFaceMaterial() );
 				//указываем позицию по оси y
@@ -144,7 +144,7 @@
  				//добавляем тень кубу
  				new THREE.ShadowVolume(Leg4);
 				//
-				
+
 				//Бумага
 				var cube = new THREE.CubeGeometry(80,20,60,1,1,1, paper);
 				StackPaper = new THREE.Mesh( cube, new THREE.MeshFaceMaterial());
@@ -154,7 +154,7 @@
 				new THREE.ShadowVolume(StackPaper);
 				//StackPaper.visible = false;
 				//
-			
+
 				//
 				var cube = new THREE.CubeGeometry(80,1,60,1,1,1, newPaper);
 				Paper = new THREE.Mesh( cube, new THREE.MeshFaceMaterial());
@@ -163,10 +163,10 @@
 				Paper.position.x = 100;
 				Paper.position.y = -7;
 				new THREE.ShadowVolume(Paper);
-				
-				
-				
- 				//устанавливаем белый свет 
+
+
+
+ 				//устанавливаем белый свет
 				light = new THREE.DirectionalLight( 0xffffff );
 				//да, объекты должны отбрасывать тень
 				light.castShadow = true;
@@ -174,23 +174,23 @@
 				//напомню, что свет двигается от указанной точки к началу координат
 				light.position.set( 0, 1, 0 );
 				//добавлям свет
-				scene.addChild(light); 
-				
+				scene.addChild(light);
 
-				
-				//рендерер 
+
+
+				//рендерер
 				renderer = new THREE.WebGLRenderer();
 				//устанавливаем ему размеры экрана
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				//и добавляем в наш созданный элемент
 				container.append( renderer.domElement );
-	
+
 
  		}
-			
 
 
-		
+
+
  		function animate()
  		{
  			requestAnimationFrame(animate);
