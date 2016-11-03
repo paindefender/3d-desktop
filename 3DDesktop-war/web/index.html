@@ -3,26 +3,29 @@
 <head>
 	<title>Three.js - 3D desktop</title>
 	<meta charset="utf-8">
-	<style>
-		body {
-			margin: 0;
-			padding: 0;
-			overflow: hidden;
-		}
-	</style>
-
-	<!-- libs -->
-	<script type="text/javascript" src="scripts/Three.js"></script>
-	<script type="text/javascript" src="scripts/RequestAnimationFrame.js"></script>
+	<link rel="stylesheet" href="css/style.css">
 	<script type="text/javascript" src="scripts/jquery.js"></script>
-
-
-	<!-- app -->
-	<script type="text/javascript" src="scripts/3ddesktop.js"></script>
-
-
+	<script type="text/javascript" src="scripts/three.min.js"></script>
+  <script type="text/javascript" src="scripts/RequestAnimationFrame.js"></script>
+  <script type="text/javascript" src="scripts/PointerLockControls.js"></script>
 </head>
 <body>
-<div></div>
+  <div id="container">
+
+    <div id="instructions">
+      <span style="font-size:40px">Click to focus</span>
+      <br />
+      (MOUSE = Look around)
+    </div>
+
+  </div>
+  <!--<div id="popup">
+    <div id="popup-content">
+      <span class="close">Close</span>
+      <p>Hello, darkness, my old friend!</p>
+    </div>
+  </div>-->
+
+  <script type="text/javascript" src="scripts/3ddesktop.js"></script>
 </body>
 </html>

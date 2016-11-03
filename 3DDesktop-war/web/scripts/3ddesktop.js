@@ -1,204 +1,137 @@
+var renderer, scene, camera, pointerlockchange, pointerlockerror, controls; //if undef just add here
+var blocker = document.getElementById( 'container' );
+var instructions = document.getElementById( 'instructions' );
+var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 
- $(document).ready(function() {
- 		// Declaring main variables
- 		var container, camera, scene, renderer, floormesh, TableTop, phi = 0, Leg1, Leg2, Leg3, Leg4, StackPaper, Paper;
+if ( havePointerLock ) {
+  var element = document.body;
+  var pointerlockchange = function ( event ) {
+    if ( document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element ) {
+      controlsEnabled = true;
+      controls.enabled = true;
+      blocker.style.display = 'none';
+    } else {
+      controls.enabled = false;
+      blocker.style.display = '-webkit-box';
+      blocker.style.display = '-moz-box';
+      blocker.style.display = 'box';
+      instructions.style.display = '';
+    }
+  };
+  var pointerlockerror = function ( event ) {
+    instructions.style.display = '';
+  };
+  // Hook pointer lock state change events
+  document.addEventListener( 'pointerlockchange', pointerlockchange, false );
+  document.addEventListener( 'mozpointerlockchange', pointerlockchange, false );
+  document.addEventListener( 'webkitpointerlockchange', pointerlockchange, false );
+  document.addEventListener( 'pointerlockerror', pointerlockerror, false );
+  document.addEventListener( 'mozpointerlockerror', pointerlockerror, false );
+  document.addEventListener( 'webkitpointerlockerror', pointerlockerror, false );
+  instructions.addEventListener( 'click', function ( event ) {
+    instructions.style.display = 'none';
+    // Ask the browser to lock the pointer
+    element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
+    if ( /Firefox/i.test( navigator.userAgent ) ) {
+      var fullscreenchange = function ( event ) {
+        if ( document.fullscreenElement === element || document.mozFullscreenElement === element || document.mozFullScreenElement === element ) {
+          document.removeEventListener( 'fullscreenchange', fullscreenchange );
+          document.removeEventListener( 'mozfullscreenchange', fullscreenchange );
+          element.requestPointerLock();
+        }
+      };
+      document.addEventListener( 'fullscreenchange', fullscreenchange, false );
+      document.addEventListener( 'mozfullscreenchange', fullscreenchange, false );
+      element.requestFullscreen = element.requestFullscreen || element.mozRequestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen;
+      element.requestFullscreen();
+    } else {
+      element.requestPointerLock();
+    }
+  }, false );
+} else {
+  instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
+}
 
+function init(){
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 
+  controls = new THREE.PointerLockControls( camera );
+  scene.add( controls.getObject() );
+  controls.getObject().position.y = 150;
+  controls.getObject().position.x = 150;
 
- 		init();
- 		animate();
+  renderer = new THREE.WebGLRenderer();
+  renderer.setClearColor( 0x90ff90 );
+  renderer.setSize( window.innerWidth, window.innerHeight );
+  document.body.appendChild(renderer.domElement);
 
- 		function init()
- 		{
- 				//
-				container = $( 'div' ).attr('id','cardfield');
-				$('body').append( container );
+  //floor
+    var floorGeo = new THREE.BoxGeometry( 700, 5, 700 );
+    var floorMat = new THREE.MeshBasicMaterial( { color: 0x6615ff } );
+    var floor = new THREE.Mesh( floorGeo, floorMat );
+    floor.position.y = -200;
+    scene.add( floor );
+  //Table
+    var TableTopGeo = new THREE.CubeGeometry( 300, 5, 500);
+    TableTop = new THREE.Mesh( TableTopGeo, new THREE.MeshBasicMaterial({ color: 0x11f84f}) );
+    TableTop.position.y = -10;
+    scene.add(TableTop);
+    var LegOneGeo = new THREE.CubeGeometry( 10, 190, 10);
+    LegOne = new THREE.Mesh( LegOneGeo, new THREE.MeshBasicMaterial({ color: 0x48f9e6}) );
+    LegOne.position.y = -105;
+    LegOne.position.x = -140;
+    LegOne.position.z = -240;
+    scene.add(LegOne);
+    var LegTwoGeo = new THREE.CubeGeometry( 10, 190, 10);
+    LegTwo = new THREE.Mesh( LegTwoGeo, new THREE.MeshBasicMaterial({ color: 0xab46f8}) );
+    LegTwo.position.x = 140;
+    LegTwo.position.y = -105;
+    LegTwo.position.z = 240;
+    scene.add(LegTwo);
+    var LegThreeGeo = new THREE.CubeGeometry( 10, 190, 10);
+    LegThree = new THREE.Mesh( LegThreeGeo, new THREE.MeshBasicMaterial({ color: 0x48f4e8}) );
+    LegThree.position.y = -105;
+    LegThree.position.x = -140;
+    LegThree.position.z = 240;
+    scene.add(LegThree);
+    var LegFourGeo = new THREE.CubeGeometry( 10, 190, 10);
+    LegFour = new THREE.Mesh( LegFourGeo, new THREE.MeshBasicMaterial({ color: 0x4fe84f}) );
+    LegFour.position.y = -105;
+    LegFour.position.x = 140;
+    LegFour.position.z = -240;
+    scene.add(LegFour);
+  //Paper
+    var StackPaperGeo = new THREE.CubeGeometry( 80,20,60 );
+    StackPaper = new THREE.Mesh( StackPaperGeo, new THREE.MeshBasicMaterial({ color: 0xffffff }));
+    StackPaper.position.z = -10;
+    StackPaper.position.x = 10;
+    scene.add(StackPaper);
+  //newPaper
+    var newPaperGeo = new THREE.CubeGeometry(80,1,60);
+    newPaper = new THREE.Mesh( newPaperGeo, new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 0.5 }));
+    newPaper.position.z = -50;
+    newPaper.position.x = 100;
+    newPaper.position.y = -7;
+    scene.add(newPaper);
 
-				//
-				camera = new THREE.TrackballCamera({
-					fov: 45,
-					aspect: window.innerWidth / window.innerHeight,
-					near: 1,
-					far: 10000,
-					rotateSpeed: 1.0,
-					zoomSpeed: 1.2,
-					panSpeed: 0.8,
-					noZoom: false,
-					noPan: false
-				});
+    window.addEventListener( 'resize', onWindowResize, false );
+}
 
+function render() {
+  renderer.render(scene, camera);
+};
 
-				// Set camera initial position
-				camera.position.z = 250;
-				camera.position.y = 175;
-				camera.target.position.y = -75;
-				// Creating a scene
-				scene = new THREE.Scene();
-				// Creating floor for our space
-				var floorgeo = new THREE.CubeGeometry(700,700,5);
-				//
-				floormesh = new THREE.Mesh(floorgeo, new THREE.MeshBasicMaterial({color: 0x248C0F, opacity:0.9}));
-				//
-				floormesh.position.y = -200;
-				//и разворачиваем его по оси х так, чтобы он был параллелен ей.
-				floormesh.rotation.x = 90 * Math.PI / 180;
-				//добавляем к сцене
-				scene.addChild(floormesh);
-				//обвертка для куба
-				var materials = [
-				 //делаем каждую сторону своего цвета
-					new THREE.MeshBasicMaterial( { color: 0xE01B4C }), // правая сторона
-					new THREE.MeshBasicMaterial( { color: 0x34609E }), // левая сторона
-					new THREE.MeshBasicMaterial( { color: 0x7CAD18 }), //верх
-					new THREE.MeshBasicMaterial( { color: 0x00EDB2 }), // низ
-					new THREE.MeshBasicMaterial( { color: 0xED7700 }), // лицевая сторона
-					new THREE.MeshBasicMaterial( { color: 0xB5B1AE }) // задняя сторона
-				];
-				// Texture for paper
-				var texture = THREE.ImageUtils.loadTexture('textures/paper.jpg');
-				var paper = [
-					new THREE.MeshBasicMaterial( {map: texture}), // правая сторона
-					new THREE.MeshBasicMaterial( {map: texture}), // левая сторона
-					new THREE.MeshBasicMaterial( { color: 0xFFFFFF }), //верх
-					new THREE.MeshBasicMaterial( { color: 0xFFFFFF }), // низ
-					new THREE.MeshBasicMaterial( {map: texture}), // лицевая сторона
-					new THREE.MeshBasicMaterial( {map: texture}) // задняя сторона
-				]
-				// Texture for new paper
-				var newPaper = [
-					new THREE.MeshBasicMaterial( {map: texture, transparent: true, opacity: 0.5}), // правая сторона
-					new THREE.MeshBasicMaterial( {map: texture, transparent: true, opacity: 0.5}), // левая сторона
-					new THREE.MeshBasicMaterial( { color: 0xFFFFFF, transparent: true, opacity: 0.5 }), //верх
-					new THREE.MeshBasicMaterial( { color: 0xFFFFFF, transparent: true, opacity: 0.5 }), // низ
-					new THREE.MeshBasicMaterial( {map: texture, transparent: true, opacity: 0.5}), // лицевая сторона
-					new THREE.MeshBasicMaterial( {map: texture, transparent: true, opacity: 0.5}) // задняя сторона
-				]
+function animate() {
+  requestAnimationFrame(animate);
+  render();
+}
 
-				// Creating top of the table
-				var cube = new THREE.CubeGeometry( 300, 5, 500, 1, 1, 1, materials );
-				//
-				TableTop = new THREE.Mesh( cube, new THREE.MeshFaceMaterial() );
-				//указываем позицию по оси y
-				TableTop.position.y = -10;
-				//добавляем к сцене
-				scene.addChild(TableTop);
- 				//Adding shadow to the object
- 				new THREE.ShadowVolume(TableTop);
+function onWindowResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize( window.innerWidth, window.innerHeight );
+}
 
-				//
-				var cube = new THREE.CubeGeometry( 10, 190, 10, 1, 1, 1, materials );
-				//создаем мэш для куба, в качестве материала мэша
-				//будет браться тот, который применен к кубу
-				Leg1 = new THREE.Mesh( cube, new THREE.MeshFaceMaterial() );
-				//указываем позицию по оси y
-				Leg1.position.y = -105;
-				Leg1.position.x = -140;
-				Leg1.position.z = -240;
-				//добавляем к сцене
-				scene.addChild(Leg1);
- 				//добавляем тень кубу
- 				new THREE.ShadowVolume(Leg1);
-				//
-
-				//
-				var cube = new THREE.CubeGeometry( 10, 190, 10, 1, 1, 1, materials );
-				//создаем мэш для куба, в качестве материала мэша
-				//будет браться тот, который применен к кубу
-				Leg2 = new THREE.Mesh( cube, new THREE.MeshFaceMaterial() );
-				//указываем позицию по оси y
-				Leg2.position.y = -105;
-				Leg2.position.x = 140;
-				Leg2.position.z = 240;
-				//добавляем к сцене
-				scene.addChild(Leg2);
- 				//добавляем тень кубу
- 				new THREE.ShadowVolume(Leg2);
-				//
-
-				//
-				var cube = new THREE.CubeGeometry( 10, 190, 10, 1, 1, 1, materials );
-				//создаем мэш для куба, в качестве материала мэша
-				//будет браться тот, который применен к кубу
-				Leg3 = new THREE.Mesh( cube, new THREE.MeshFaceMaterial() );
-				//указываем позицию по оси y
-				Leg3.position.y = -105;
-				Leg3.position.x = -140;
-				Leg3.position.z = 240;
-				//добавляем к сцене
-				scene.addChild(Leg3);
- 				//добавляем тень кубу
- 				new THREE.ShadowVolume(Leg3);
-				//
-
-				//
-				var cube = new THREE.CubeGeometry( 10, 190, 10, 1, 1, 1, materials );
-				//создаем мэш для куба, в качестве материала мэша
-				//будет браться тот, который применен к кубу
-				Leg4 = new THREE.Mesh( cube, new THREE.MeshFaceMaterial() );
-				//указываем позицию по оси y
-				Leg4.position.y = -105;
-				Leg4.position.x = 140;
-				Leg4.position.z = -240;
-				//добавляем к сцене
-				scene.addChild(Leg4);
- 				//добавляем тень кубу
- 				new THREE.ShadowVolume(Leg4);
-				//
-
-				//Бумага
-				var cube = new THREE.CubeGeometry(80,20,60,1,1,1, paper);
-				StackPaper = new THREE.Mesh( cube, new THREE.MeshFaceMaterial());
-				scene.addChild(StackPaper);
-				StackPaper.position.z = -10;
-				StackPaper.position.x = 10;
-				new THREE.ShadowVolume(StackPaper);
-				//StackPaper.visible = false;
-				//
-
-				//
-				var cube = new THREE.CubeGeometry(80,1,60,1,1,1, newPaper);
-				Paper = new THREE.Mesh( cube, new THREE.MeshFaceMaterial());
-				scene.addChild(Paper);
-				Paper.position.z = -50;
-				Paper.position.x = 100;
-				Paper.position.y = -7;
-				new THREE.ShadowVolume(Paper);
-
-
-
- 				//устанавливаем белый свет
-				light = new THREE.DirectionalLight( 0xffffff );
-				//да, объекты должны отбрасывать тень
-				light.castShadow = true;
-				//сам пол у нас в -150, свет соотв. ставим выше (в 1 по y и 0 по x и z), чтобы он попадал на наш куб и заставлял его отбрасывать тень
-				//напомню, что свет двигается от указанной точки к началу координат
-				light.position.set( 0, 1, 0 );
-				//добавлям свет
-				scene.addChild(light);
-
-
-
-				//рендерер
-				renderer = new THREE.WebGLRenderer();
-				//устанавливаем ему размеры экрана
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				//и добавляем в наш созданный элемент
-				container.append( renderer.domElement );
-
-
- 		}
-
-
-
-
- 		function animate()
- 		{
- 			requestAnimationFrame(animate);
- 			render();
- 		}
-
- 		function render()
- 		{
- 			renderer.render(scene, camera);
- 		}
-});
+init();
+animate();
