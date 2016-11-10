@@ -112,7 +112,8 @@ public class AddNote extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         if (session == null){
-            response.sendRedirect("login");
+            //response.sendRedirect("login");
+            response.setStatus(403);
         } else {
             Map<String, String[]> m = request.getParameterMap();
             if (m.containsKey("title") && m.containsKey("text")){
@@ -122,12 +123,15 @@ public class AddNote extends HttpServlet {
             Note note = new Note(user, title[0], text[0]);
             try {
                 Note.addNote(note);
-                response.sendRedirect("");
+                //response.sendRedirect("");
+                response.setStatus(200);
             } catch (Exception ex) {
-                response.sendRedirect("new");
+                //response.sendRedirect("new");
+                response.setStatus(400);
             }
         } else {
-            response.sendRedirect("new");
+            //response.sendRedirect("new");
+            response.setStatus(400);
         }
         }
     }

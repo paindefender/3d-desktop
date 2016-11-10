@@ -53,7 +53,8 @@ public class Login extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         if (session != null){
-            response.sendRedirect("");
+            //response.sendRedirect("");
+            session.invalidate();
         }
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
@@ -95,7 +96,8 @@ public class Login extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         if (session != null){
-            response.sendRedirect("");
+            //response.sendRedirect("");
+            session.invalidate();
         }
         Map<String,String[]> m = request.getParameterMap();
         if (m.containsKey("name") && m.containsKey("password")){
@@ -107,15 +109,18 @@ public class Login extends HttpServlet {
                     //session
                     session = request.getSession();
                     session.setAttribute("user", user);
-                    response.sendRedirect("");
+                    response.setStatus(response.SC_OK);
                 } else {
-                    response.sendRedirect("login");
+                    //response.sendRedirect("login");
+                    response.setStatus(400);
                 }
             } catch (Exception ex){
-                response.sendRedirect("login");
+                //response.sendRedirect("login");
+                response.setStatus(400);
             }
         } else {
-            response.sendRedirect("login");
+            //response.sendRedirect("login");
+            response.setStatus(400);
         }
     }
 

@@ -17,7 +17,7 @@ import javax.servlet.http.HttpSession;
 import model.Note;
 import model.User;
 
-@WebServlet(urlPatterns = {"/"})
+@WebServlet(urlPatterns = {"/notes"})
 public class MainServlet extends HttpServlet {
 
     /**
@@ -37,10 +37,12 @@ public class MainServlet extends HttpServlet {
             Gson gson = new Gson();
             //User user = User.getUserByName("admin");
             String json = gson.toJson(Note.getNotesByUser(user));
+            response.setContentType("application/json;charset=UTF-8");
             response.getWriter().append(json);
         } catch (Exception ex) {
             request.getSession().invalidate();
-            response.sendRedirect("login");
+            response.setStatus(403);
+            //response.sendRedirect("login");
         }
     }
 
@@ -58,7 +60,8 @@ public class MainServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         if (session == null){
-            response.sendRedirect("login");
+            response.setStatus(403);
+            //response.sendRedirect("login");
         } else
         processRequest(request, response);
     }
@@ -76,7 +79,8 @@ public class MainServlet extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         if (session == null){
-            response.sendRedirect("login");
+            response.setStatus(403);
+            //response.sendRedirect("login");
         } else
         processRequest(request, response);
     }

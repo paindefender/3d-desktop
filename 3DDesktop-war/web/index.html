@@ -4,7 +4,7 @@
 	<title>Three.js - 3D desktop</title>
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="css/style.css">
-	<script type="text/javascript" src="scripts/jquery.js"></script>
+	<script type="text/javascript" src="scripts/jquery-3.1.1.min.js"></script>
 	<script type="text/javascript" src="scripts/three.min.js"></script>
   <script type="text/javascript" src="scripts/RequestAnimationFrame.js"></script>
   <script type="text/javascript" src="scripts/PointerLockControls.js"></script>
@@ -19,12 +19,33 @@
     </div>
 
   </div>
-  <!--<div id="popup">
-    <div id="popup-content">
-      <span class="close">Close</span>
-      <p>Hello, darkness, my old friend!</p>
+
+  <div id="login">
+    <form><div style="margin-left: 60px; margin-top: 80px; border: none; width: 30%; height: 20%;">
+      username: <input type="text" name="name" id="loginName"></br>
+      password: <input type="password" name="password" id="loginPassword"></br>
+      <input type="submit" id="loginBtn" value="log in">
     </div>
-  </div>-->
+    </form>
+  </div>
+
+  <div id="addNote">
+    <div>
+    <span id="closeAddNotes">x</span></div>
+    <form><div style="margin-left: 60px; margin-top: 80px; border: none; width: 30%; height: 20%;">
+      title: <input type="text" name="title" id="newNoteTitle"></br>
+      text: <textarea name="text" rows="8" cols="40" id="newNoteText"></textarea></br>
+      <input type="submit" value="Add note"></div>
+    </form>
+  </div>
+
+  <div id="showNotes">
+    <div>
+    <span id="closeNotes">X</span></div>
+    <ul id="notesList">
+
+    </ul>
+  </div>
 
   <script type="text/javascript" src="scripts/3ddesktop.js"></script>
 </body>
