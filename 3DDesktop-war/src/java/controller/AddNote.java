@@ -8,7 +8,10 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -65,7 +68,8 @@ public class AddNote extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         if (session == null){
-            response.sendRedirect("login");
+            response.setStatus(403);
+            return;
         } else {
             User user = (User)session.getAttribute("user");
             response.setContentType("text/html;charset=UTF-8");
@@ -114,25 +118,42 @@ public class AddNote extends HttpServlet {
         if (session == null){
             //response.sendRedirect("login");
             response.setStatus(403);
+            return;
         } else {
             Map<String, String[]> m = request.getParameterMap();
+            if (m.containsKey("delNote") && m.containsKey("id")){
+                String[] idString = m.get("id");
+                Integer id = Integer.parseInt(idString[0]);
+                try {
+                    Note.deleteNote(id);
+                    response.setStatus(200);
+                    return;
+                } catch (Exception ex) {
+                    response.setStatus(400);
+                    return;
+                }
+            }
+            
             if (m.containsKey("title") && m.containsKey("text")){
-            String[] title = m.get("title");
-            String[] text = m.get("text");
-            User user = (User)session.getAttribute("user");
-            Note note = new Note(user, title[0], text[0]);
-            try {
-                Note.addNote(note);
-                //response.sendRedirect("");
-                response.setStatus(200);
-            } catch (Exception ex) {
+                String[] title = m.get("title");
+                String[] text = m.get("text");
+                User user = (User)session.getAttribute("user");
+                Note note = new Note(user, title[0], text[0]);
+                try {
+                    Note.addNote(note);
+                    //response.sendRedirect("");
+                    response.setStatus(200);
+                    return;
+                } catch (Exception ex) {
+                    //response.sendRedirect("new");
+                    response.setStatus(400);
+                    return;
+                }
+            } else {
                 //response.sendRedirect("new");
                 response.setStatus(400);
+                return;
             }
-        } else {
-            //response.sendRedirect("new");
-            response.setStatus(400);
-        }
         }
     }
 

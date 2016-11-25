@@ -42,6 +42,7 @@ public class MainServlet extends HttpServlet {
         } catch (Exception ex) {
             request.getSession().invalidate();
             response.setStatus(403);
+            return;
             //response.sendRedirect("login");
         }
     }
@@ -61,6 +62,7 @@ public class MainServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         if (session == null){
             response.setStatus(403);
+            return;
             //response.sendRedirect("login");
         } else
         processRequest(request, response);
@@ -80,6 +82,7 @@ public class MainServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         if (session == null){
             response.setStatus(403);
+            return;
             //response.sendRedirect("login");
         } else
         processRequest(request, response);

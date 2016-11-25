@@ -100,6 +100,11 @@ public class Login extends HttpServlet {
             session.invalidate();
         }
         Map<String,String[]> m = request.getParameterMap();
+        if (m.containsKey("logout") && (session != null)){
+            session.invalidate();
+            response.setStatus(response.SC_OK);
+            return;
+        }
         if (m.containsKey("name") && m.containsKey("password")){
             String[] name = m.get("name");
             String[] password = m.get("password");
@@ -113,14 +118,17 @@ public class Login extends HttpServlet {
                 } else {
                     //response.sendRedirect("login");
                     response.setStatus(400);
+                    return;
                 }
             } catch (Exception ex){
                 //response.sendRedirect("login");
                 response.setStatus(400);
+                return;
             }
         } else {
             //response.sendRedirect("login");
             response.setStatus(400);
+            return;
         }
     }
 
